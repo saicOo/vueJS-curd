@@ -29,8 +29,8 @@
                     <td>{{ student.phone }}</td>
                     <td>{{ student.created_at }}</td>
                     <td>
-                        <RouterLink to="/" class="btn btn-success float-end">Edit</RouterLink>
-                        <button type="button" class="btn btn-danger float-end">Delete</button>
+                        <RouterLink :to="{path:'students/'+student.id+'/edit'}" class="btn btn-success float-end">Edit</RouterLink>
+                        <button type="button" @click="deleteStudent(student.id)" class="btn btn-danger float-end">Delete</button>
                     </td>
                 </tr>
             </tbody>
@@ -58,6 +58,22 @@ export default {
                 this.students = res.data.students
                 console.log(res);
             });
+        },
+        deleteStudent(studentId){
+            if (confirm('Are you sure, you want delete this data ?')) {
+                console.log(studentId);
+                axios.delete(`http://127.0.0.1:8000/api/students/${studentId}/delete`).then(res=>{
+                alert(res.data.message)
+                this.getStudents()
+            }).catch(error=>{
+                if (error.response) {
+                    console.log(error);
+                    if(error.response.status == 404){
+                        alert(error.response.data.message);
+                    }
+                }
+            });
+            }
         }
     }
 }
